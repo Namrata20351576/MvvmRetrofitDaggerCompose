@@ -19,10 +19,10 @@ import javax.inject.Inject
 @HiltViewModel
 class ProductViewModel @Inject constructor(private val repository: ProductRepository) :
     ViewModel() {
-    private val _posts = MutableStateFlow(emptyList<Product>())
-    val posts: StateFlow<List<Product>> = _posts
+    private val _products = MutableStateFlow(emptyList<Product>())
+    val products: StateFlow<List<Product>> = _products
 
     suspend fun getProducts() {
-        _posts.value = repository.getProducts()
+        _products.value = repository.getProducts()
     }
 }

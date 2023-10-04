@@ -1,5 +1,6 @@
 package com.nams.mvvmretrofitdaggercompose.ui
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.padding
@@ -14,6 +15,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -37,7 +39,7 @@ fun ProductScreen(viewModel: ProductViewModel) {
             viewModel.getProducts()
         }
     }
-    val products by viewModel.posts.collectAsState()
+    val products by viewModel.products.collectAsState()
     displayProduct(products)
 }
 
@@ -60,23 +62,46 @@ fun previewProduct() {
     displayProduct(productList)
 }
 
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun previewNoProduct() {
+    val productList = mutableListOf<Product>()
+   displayProduct(productList)
+}
+
 @Composable
 fun displayProduct(data: List<Product>) {
-    val state = rememberLazyGridState()
-    LazyVerticalGrid(
-        state = state,
-        columns = GridCells.Fixed(2),
-        modifier = Modifier
-            .padding(16.dp),
-        content = {
-            items(data) { item ->
-                ProductListItem(
-                    item.image,
-                    item.title,
-                    item.description,
-                    item.price)
-            }
-        })
+    if (data != null && data.isNotEmpty()) {
+        val state = rememberLazyGridState()
+        LazyVerticalGrid(
+            state = state,
+            columns = GridCells.Fixed(2),
+            modifier = Modifier
+                .padding(16.dp),
+            content = {
+                items(data) { item ->
+                    ProductListItem(
+                        item.image,
+                        item.title,
+                        item.description,
+                        item.price
+                    )
+                }
+            })
+    } else {
+        Column(
+            modifier = Modifier
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = stringResource(id = R.string.no_product),
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+    }
 }
 
 @Composable
@@ -91,7 +116,9 @@ fun ProductListItem(
     Card(modifier = Modifier.padding(8.dp), elevation = 8.dp) {
         Column() {
             AsyncImage(
-                modifier = Modifier.padding(start = 8.dp).aspectRatio(1f),
+                modifier = Modifier
+                    .padding(start = 8.dp)
+                    .aspectRatio(1f),
                 model = image,
                 placeholder = painterResource(id = R.drawable.ic_launcher_foreground),
                 error = painterResource(id = R.drawable.ic_launcher_foreground),
