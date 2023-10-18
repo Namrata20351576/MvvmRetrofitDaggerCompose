@@ -9,10 +9,6 @@ import javax.inject.Inject
 
 class ProductRepository @Inject constructor(private val productAPI: ProductAPI) {
 
-    private val _products = MutableLiveData<List<Product>>()
-    val products: LiveData<List<Product>>
-    get() = _products
-
     @SuppressLint("SuspiciousIndentation")
     suspend fun getProducts(): List<Product>
     {
